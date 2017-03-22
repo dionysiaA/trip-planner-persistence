@@ -9,7 +9,7 @@
  * then tells the trip module to add the attraction.
  */
 
-$(function(){
+$(function() {
 
   // jQuery selects
   var $optionsPanel = $('#options-panel');
@@ -18,11 +18,20 @@ $(function(){
   var $activitySelect = $optionsPanel.find('#activity-choices');
 
   // make all the option tags (second arg of `forEach` is a `this` binding)
-  hotels.forEach(makeOption, $hotelSelect);
-  restaurants.forEach(makeOption, $restaurantSelect);
-  activities.forEach(makeOption, $activitySelect);
+  attractionsModule.getHotels().then(function(hotels) {
+    hotels.forEach(makeOption, $hotelSelect);
+  });
+  attractionsModule.getRestaurants().then(function(restaurants) {
+    return restaurants.forEach(makeOption, $restaurantSelect);
+  });
+  attractionsModule.getActivities().then(function(activities) {
+    return activities.forEach(makeOption, $activitySelect);
+  });
+  // getHotels.forEach(makeOption, $hotelSelect);
+  // getRestaurants.forEach(makeOption, $restaurantSelect);
+  // getActivities.forEach(makeOption, $activitySelect);
 
-  function makeOption (databaseAttraction) {
+  function makeOption(databaseAttraction) {
     var $option = $('<option></option>') // makes a new option tag
       .text(databaseAttraction.name)
       .val(databaseAttraction.id);
@@ -30,7 +39,7 @@ $(function(){
   }
 
   // what to do when the `+` button next to a `select` is clicked
-  $optionsPanel.on('click', 'button[data-action="add"]', function () {
+  $optionsPanel.on('click', 'button[data-action="add"]', function() {
     var $select = $(this).siblings('select');
     var type = $select.data('type'); // from HTML data-type attribute
     var id = $select.find(':selected').val();
