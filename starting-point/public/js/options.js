@@ -1,5 +1,5 @@
 'use strict';
-/* global $ tripModule attractionsModule hotels restaurants activities */
+/* global $ globalData tripModule attractionsModule hotels restaurants activities */
 
 /**
  * This module fills the `select` tags with `option`s.
@@ -18,14 +18,14 @@ $(function() {
   var $activitySelect = $optionsPanel.find('#activity-choices');
 
   // make all the option tags (second arg of `forEach` is a `this` binding)
-  attractionsModule.getHotels().then(function(hotels) {
+  globalData.hotels.then(function(hotels) {
     hotels.forEach(makeOption, $hotelSelect);
   });
-  attractionsModule.getRestaurants().then(function(restaurants) {
-    return restaurants.forEach(makeOption, $restaurantSelect);
+  globalData.restaurants.then(function(restaurants) {
+    restaurants.forEach(makeOption, $restaurantSelect);
   });
-  attractionsModule.getActivities().then(function(activities) {
-    return activities.forEach(makeOption, $activitySelect);
+  globalData.activities.then(function(activities) {
+    activities.forEach(makeOption, $activitySelect);
   });
   // getHotels.forEach(makeOption, $hotelSelect);
   // getRestaurants.forEach(makeOption, $restaurantSelect);
@@ -40,9 +40,13 @@ $(function() {
 
   // what to do when the `+` button next to a `select` is clicked
   $optionsPanel.on('click', 'button[data-action="add"]', function() {
+    console.log($(this));
     var $select = $(this).siblings('select');
+    console.log($select);
     var type = $select.data('type'); // from HTML data-type attribute
+    console.log(type);
     var id = $select.find(':selected').val();
+    console.log(type, id)
     // get associated attraction and add it to the current day in the trip
     var attraction = attractionsModule.getByTypeAndId(type, id);
     tripModule.addToCurrent(attraction);
